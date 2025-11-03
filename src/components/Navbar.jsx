@@ -101,77 +101,98 @@ import { StoreContext } from "../context/Store.Context";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
-  const { getTotalCartCount } = useContext(StoreContext);
-  const totalItems = getTotalCartCount();
+  const [showSearch, setShowSearch] = useState(false);
+  const { searchQuery, setSearchQuery } = useContext(StoreContext);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setShowSearch(false);
+
+    // Scroll to the FoodDisplay section
+    const section = document.getElementById("menu");
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <div className="font-sans bg-white text-gray-800">
-      {/* Navbar */}
-      <nav className="flex justify-between items-center px-8 md:px-16 py-5 shadow-sm sticky top-0 bg-white z-50">
-        {/* Logo */}
+      <nav className="flex justify-between items-center px-6 md:px-16 py-5 shadow-sm sticky top-0 bg-white z-50">
         <h1 className="text-3xl font-extrabold text-orange-600 tracking-tight cursor-pointer">
           Foodo<span className="text-red-600">.</span>
         </h1>
 
-        {/* Nav Links */}
         <ul className="hidden md:flex space-x-10 text-[16px] font-medium">
-          <li className="hover:text-orange-600 cursor-pointer transition-all">Home</li>
-          <li className="hover:text-orange-600 cursor-pointer transition-all">Menu</li>
-          <li className="hover:text-orange-600 cursor-pointer transition-all">Mobile-app</li>
-          <li className="hover:text-orange-600 cursor-pointer transition-all">Contact Us</li>
+          <li className="hover:text-orange-600 cursor-pointer transition-all">
+            Home
+          </li>
+          <li
+            className="hover:text-orange-600 cursor-pointer transition-all"
+            onClick={() =>
+              document
+                .getElementById("menu")
+                .scrollIntoView({ behavior: "smooth" })
+            }
+          >
+            Menu
+          </li>
+          <li className="hover:text-orange-600 cursor-pointer transition-all">
+            Mobile App
+          </li>
+          <li className="hover:text-orange-600 cursor-pointer transition-all">
+            Contact Us
+          </li>
         </ul>
 
-        {/* Icons + Button */}
+        {/* Right Side */}
         <div className="flex items-center space-x-6 relative">
-          <img src={assets.search_icon} className="w-5 cursor-pointer" alt="search" />
+          {/* 🔍 Search */}
+          <img
+            src={assets.search_icon}
+            className="w-5 cursor-pointer"
+            onClick={() => setShowSearch(!showSearch)}
+          />
 
-          {/* 🛒 Cart Icon with Badge */}
-          <div className="relative">
-            <img src={assets.basket_icon} className="w-6 cursor-pointer" alt="cart" />
-            {totalItems > 0 && (
-              <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs font-semibold px-1.5 py-0.5 rounded-full">
-                {totalItems}
-              </span>
-            )}
-          </div>
+          <img src={assets.basket_icon} className="w-5" alt="" />
 
           <button className="hidden md:block bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full font-semibold transition-all shadow-md hover:shadow-lg">
             Login
           </button>
+
+          {showSearch && (
+            <form
+              onSubmit={handleSearch}
+              className="absolute top-10 right-0 bg-white shadow-md rounded-full px-3 py-1 flex items-center space-x-2 border border-gray-200 animate-fadeIn w-52 md:w-64"
+            >
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search food..."
+                className="flex-1 px-2 py-1 outline-none text-sm text-gray-700"
+              />
+              <button type="submit">
+                <img src={assets.search_icon} className="w-4" alt="search" />
+              </button>
+            </form>
+          )}
         </div>
 
-        {/* Mobile Menu Toggle */}
-        <button
-          onClick={() => setOpen(!open)}
-          aria-label="Menu"
-          className="sm:hidden ml-3"
-        >
-          <svg
-            width="21"
-            height="15"
-            viewBox="0 0 21 15"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+        {/* Mobile Menu Button */}
+        <button onClick={() => setOpen(!open)} className="md:hidden ml-3">
+          <svg width="21" height="15" viewBox="0 0 21 15" fill="none">
             <rect width="21" height="1.5" rx=".75" fill="#426287" />
             <rect x="8" y="6" width="13" height="1.5" rx=".75" fill="#426287" />
-            <rect x="6" y="13" width="15" height="1.5" rx=".75" fill="#426287" />
+            <rect
+              x="6"
+              y="13"
+              width="15"
+              height="1.5"
+              rx=".75"
+              fill="#426287"
+            />
           </svg>
         </button>
-
-        {/* Sidebar (Mobile Menu) */}
-        <div
-          className={`${
-            open ? "flex" : "hidden"
-          } absolute top-[60px] left-0 w-full bg-white shadow-md py-4 flex-col items-start gap-2 px-5 text-sm md:hidden`}
-        >
-          <a href="#" className="block">Home</a>
-          <a href="#" className="block">About</a>
-          <a href="#" className="block">Contact</a>
-          <button className="cursor-pointer px-6 py-2 mt-2 bg-orange-500 hover:bg-orange-600 transition text-white rounded-full text-sm">
-            Login
-          </button>
-        </div>
       </nav>
     </div>
   );
